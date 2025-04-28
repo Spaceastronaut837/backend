@@ -1,0 +1,81 @@
+app.get("/employees/:salary",(req,res)=>{
+    const salary=req.params.salary;
+    var foundEmployee=employees.filter((employee)=>employee.salary>salary);
+    console.log(foundEmployee);
+    if(foundEmployee)
+    {
+        res.json({
+            message:"Employee found",
+            data:foundEmployee,
+        });
+    }else{
+        res.json({
+            message:"employee not found",
+            data:null,
+        });
+    }
+});
+app.get("/user/:id",(req,res)=>{
+    const id=req.params.id;
+    var foundUser=users.find((user)=>user.id==id);
+    console.log(foundUser);
+    if(foundUser)
+    {
+        res.json({
+            message:"user found",
+            data:foundUser,
+        });
+    }else{
+        res.json({
+            message:"user not found",
+            data:null,
+        });
+    }
+});
+
+app.get("/employees/:id",(req,res)=>{
+    const id=req.params.id;
+    var employee=employees.find((emp)=>emp.id==id)
+    if(employee)
+    {
+        res.json({message:"Employee Data fetched successfully",
+            data:employee
+        });
+    }
+    else{
+        res.json({
+            message:"Data not fetched",
+            data:null
+        })
+    }
+})
+
+
+
+
+
+
+
+
+app.get("/students/:course",(req,res)=>{
+    const course=req.params.course;
+    var foundStudent=students.filter((student)=>student.courses.includes(course)).map((stu)=>{
+        return{
+            name:stu.name,
+            courses:stu.courses
+        }
+    });
+    console.log(foundStudent);
+    if(foundStudent.length>0)
+    {
+        res.json({
+            message:"Student found",
+            data:foundStudent,
+        });
+    }else{
+        res.json({
+            message:"Student not found",
+            data:null,
+        });
+    }
+});
