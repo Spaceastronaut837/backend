@@ -22,6 +22,9 @@ const userModel=new Schema({
     department:{
         type:Schema.Types.ObjectId,
         ref:"department"
+    },
+    password:{
+        type:String
     }
 })
 

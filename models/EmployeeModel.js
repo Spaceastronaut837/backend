@@ -10,7 +10,7 @@ const employeeModel=new Schema({
     },
     age:{
         type:Number
-    },
+    },  
     salary:{
         type:Number
     }

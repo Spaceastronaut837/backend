@@ -1,6 +1,9 @@
 const userModel=require("../models/UserModel");
 const sendMail=require("../utils/mailUtil")
 const otpModel=require("../models/otpModel")
+const bcrypt=require("bcrypt")
+const jwt=require("jsonwebtoken")
+const tokenUtil=require("../utils/tokenUtil")
 
 const getUsers=async(req,res)=>{
     const users=await userModel.find().populate("department");
@@ -20,12 +23,44 @@ const getUsers2=async(req,res)=>{
 }
 
 const addUser=async(req,res)=>{
+    const salt=bcrypt.genSaltSync(12);
+    const hashedPassword=bcrypt.hashSync(req.body.password,salt)
+    req.body.password=hashedPassword
     const savedUser=await userModel.create(req.body);
     sendMail(savedUser.email,"Welcome mail","Hi"+savedUser.name+"!Glad to induct you inside the portal")
     res.json({
         message:"user saved successfully",
         data:savedUser,
     })
+}
+
+const loginUser=async(req,res)=>{
+    const {email,password}=req.body;
+
+    const userFromEmail=await userModel.findOne({email:email});
+    // const userId=userFromEmail._id
+    if(userFromEmail){
+        // console.log(userFromEmail);
+        // console.log(password,userFromEmail.password);
+        const isMatch=bcrypt.compareSync(password,userFromEmail.password)
+        if(isMatch){
+            const token=tokenUtil.generateToken({id:userFromEmail._id.toString()})
+            console.log(token);
+            res.json({
+                message:"login success",
+                data:userFromEmail,
+                token:token
+            });
+        }else{
+            res.status(401).json({
+                message:"invalid cred..."   
+            });
+        }
+    }else{
+        res.status(404).json({
+            message:"user doesnt exist"
+        })
+    }
 }
 
 const forgotPassword=async(req,res)=>{
@@ -92,6 +127,7 @@ const resetPassword=async(req,res)=>{
             // foundUser.findByIdAndUpdate(foundUser._id,{gender:req.body.gender})
             foundUser.gender=req.body.gender
             await foundUser.save()
+            
             res.json({
                 message:"Gender successfully changed",
                 data:foundUser
@@ -119,7 +155,7 @@ const addHobbieToId=async(req,res)=>{
             }
             else{
                 res.json({
-                    message:"Hobby not added  "
+                    message:"Hobby not added"
                 })
             }
     }  
@@ -158,4 +194,5 @@ module.exports={
     getUserByGender,
     updateUserById,
     addHobbieToId,
+    loginUser
 };  

@@ -15,6 +15,7 @@ const studentRoutes=require("./routes/StudentRoutes")
 const departmentRoutes=require("./routes/DepartmentRoutes")
 const productRoutes=require("./routes/ProductRoutes")
 const categoryRoutes=require("./routes/CategoryRoutes")
+const uploadRoutes=require("./routes/UploadRoutes")
 
 app.use(employeeRoutes)
 app.use(userRoutes)
@@ -22,6 +23,7 @@ app.use(studentRoutes)
 app.use("/dept",departmentRoutes)
 app.use("/product",productRoutes)
 app.use("/category",categoryRoutes)
+app.use(uploadRoutes)
 
 mongoose.connect("mongodb://127.0.0.1:27017/dhwanitapp").then(()=>{
     console.log("connected to db");
